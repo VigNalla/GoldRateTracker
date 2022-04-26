@@ -1,14 +1,18 @@
 from bs4 import BeautifulSoup
 import requests
+import datetime
+import time
 import lxml
-import smtplib
+from keep_alive import keep_alive
 from twilio.rest import Client
 from twilio.http.http_client import TwilioHttpClient
 
 account_sid = 'AC723997122710e147b7920e6e7a3ea951'
-auth_token = 'a32647faa50e81b37c3e3470bd54cf21'
+auth_token = '28df1270546026be34174fa9e126a22d'
 client = Client(account_sid, auth_token)
 DESIRED_PRICE = 5000
+
+keep_alive()
 
 URL="https://www.goodreturns.in/gold-rates/"
 headers = {
@@ -24,13 +28,16 @@ current_price = int(item_price)
 
 print(current_price)
 
-if current_price <= DESIRED_PRICE:
-    # proxy_client = TwilioHttpClient()
-    # proxy_client.session.proxies = {'https': os.environ['https_proxy']}
-    # client = Client(account_sid, auth_token, http_client=proxy_client)
-    message = client.messages.create(
-        body=f"Price of Gold,is now ₹{current_price}.\n Buy Now!",
-        from_='+19206682105',
-        to='+91 80726 99523'
-    )
-    print(message.status)
+while True:
+  if current_price <= DESIRED_PRICE and datetime.datetime.now().time().hour==3:
+      proxy_client = TwilioHttpClient()
+      # proxy_client.session.proxies = {'https': os.environ['https_proxy']}
+      client = Client(account_sid, auth_token,         http_client=proxy_client)
+      message = client.messages.create(
+          body=f"Price of Gold,is now ₹{current_price}.\n Buy Now!",
+          from_='+19206682105',
+          to='+91 80726 99523'
+      )
+      print(message.status)
+      time.sleep(3600)
+      
