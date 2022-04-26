@@ -26,7 +26,6 @@ item_price = soup.find(id='el').get_text().split(' ')[1].replace(',','')
 
 current_price = int(item_price)
 
-print(current_price)
 
 while True:
   if current_price <= DESIRED_PRICE and datetime.datetime.now().time().hour==3:
